@@ -5,6 +5,7 @@ from fetch import theme
 from fetch import icon
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+from random import sample
 
 
    
@@ -153,7 +154,7 @@ class MainWindow(Gtk.Window):
         
         ####################### WIDGET #########################
         
-        info = Gtk.Label(label="Move your downloaded themes and icon  and  extract  if  ziped into respected sub directory of gnome-theme located in your home dir")
+        info = Gtk.Label(label="Move your downloaded themes,icon,wallpaper and extract if ziped into respected sub directory of gnome-theme located in your home directory")
         info.set_line_wrap(True)
         info.set_max_width_chars(35)
         
@@ -308,13 +309,13 @@ class MainWindow(Gtk.Window):
         if switch1.get_active() == False:
             print("switch is off ugh")
         else:
-            sessionfile = os.system("pgrep gnome-session")     
-            print(sessionfile)
-            os.system("export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ|cut -d= -f2-)")
-            wallpaper = os.system('find {} -type f | shuf -n1'.format(waldir))   
-            os.system('gsettings set org.gnome.desktop.background picture-options "spanned"')
-            os.system('gsettings set org.gnome.desktop.background picture-uri "file://${{{}}}"'.format(wallpaper))
-        
+            walist = os.listdir(waldir)
+            wallpaper = sample(walist,1)
+            print(wallpaper[0])
+            walcmd = '''gsettings set org.gnome.desktop.background picture-uri "'file://'''+HOME+"/gnome-theme/wallpapers"+'/'+wallpaper[0]+'\'"'
+            os.system(walcmd)
+            
+            
 window = MainWindow()
 
 window.connect("delete-event", Gtk.main_quit)
@@ -323,6 +324,10 @@ window.show_all()
 
 
 Gtk.main()
+
+
+
+
 
 
 
